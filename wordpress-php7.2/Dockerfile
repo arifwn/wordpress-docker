@@ -46,7 +46,7 @@ RUN set -ex; \
 
 COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 
-a2enmod headers
+RUN a2enmod headers
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
