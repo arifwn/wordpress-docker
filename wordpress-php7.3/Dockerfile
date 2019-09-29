@@ -46,11 +46,16 @@ RUN set -ex; \
         | xargs -rt apt-mark manual; \
     \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+    apt-get update; \
     apt-get install -y \
         zip \
         unzip \
         unixodbc \
+        apt-transport-https xfonts-base xfonts-75dpi libsasl2-dev wget fontconfig libxrender1 \
     ; \
+    wget --quiet https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb -P /tmp/; \
+    dpkg -i /tmp/wkhtmltox_0.12.5-1.stretch_amd64.deb; \
+    rm /tmp/wkhtmltox_0.12.5-1.stretch_amd64.deb \
     rm -rf /var/lib/apt/lists/*
 
 COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
