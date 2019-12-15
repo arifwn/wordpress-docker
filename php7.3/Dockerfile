@@ -7,8 +7,6 @@ RUN set -ex; \
     \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-        libjpeg-dev \
-        libpng-dev \
         libmemcached-dev \
         libz-dev \
         libzip-dev \
@@ -18,6 +16,11 @@ RUN set -ex; \
         freetds-dev \
         zlib1g-dev \
         libmcrypt-dev \
+        libwebp-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libxpm-dev \
+        libfreetype6-dev \
     ; \
     \
     pecl install memcached; \
@@ -26,8 +29,10 @@ RUN set -ex; \
     docker-php-ext-enable mcrypt; \
     docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr; \
     docker-php-ext-configure pdo_dblib --with-libdir=/lib/x86_64-linux-gnu; \
-    docker-php-ext-configure gd --with-png-dir=/usr --with-jpeg-dir=/usr; \
-    docker-php-ext-install xsl pdo_odbc soap pdo_dblib zip gd mysqli opcache; \
+    docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
+    --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir \
+    --enable-gd-native-ttf; \
+    docker-php-ext-install gd xsl pdo_odbc soap pdo_dblib zip opcache; \
     \
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
     apt-mark auto '.*' > /dev/null; \
