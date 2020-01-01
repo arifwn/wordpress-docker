@@ -31,7 +31,7 @@ RUN set -ex; \
     docker-php-ext-configure pdo_dblib --with-libdir=/lib/x86_64-linux-gnu; \
     docker-php-ext-configure gd --with-gd --with-webp-dir --with-jpeg-dir \
     --with-png-dir --with-zlib-dir --with-xpm-dir --with-freetype-dir; \
-    docker-php-ext-install gd xsl pdo_odbc soap pdo_dblib zip opcache; \
+    docker-php-ext-install mysqli gd xsl pdo_odbc soap pdo_dblib zip opcache; \
     \
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
     apt-mark auto '.*' > /dev/null; \
