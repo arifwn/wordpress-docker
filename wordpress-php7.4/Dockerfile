@@ -24,9 +24,11 @@ RUN set -ex; \
     ; \
     \
     pecl install memcached; \
+    pecl install redis; \
     pecl install mcrypt-1.0.3; \
     docker-php-ext-enable memcached; \
     docker-php-ext-enable mcrypt; \
+    docker-php-ext-enable redis; \
     docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr; \
     docker-php-ext-configure pdo_dblib --with-libdir=/lib/x86_64-linux-gnu; \
     docker-php-ext-configure gd --with-webp --with-jpeg \
