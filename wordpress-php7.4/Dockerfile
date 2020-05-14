@@ -85,8 +85,9 @@ RUN set -ex; \
     wp --allow-root --version
 
 COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
+COPY init-with-newrelic.sh /usr/local/bin/
 
 RUN a2enmod headers
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["init-with-newrelic.sh"]
 CMD ["apache2-foreground"]

@@ -1,0 +1,88 @@
+version: '2'
+services:
+  reverse-proxy:
+    # The official v2.0 Traefik docker image
+    image: traefik:v2.0
+    command:
+      #- "--log.level=DEBUG"
+      # - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      # - "--certificatesresolvers.dokchallenge.acme.httpchallenge=true"
+      # - "--certificatesresolvers.dokchallenge.acme.httpchallenge.entrypoint=web"
+      # - "--certificatesresolvers.dokchallenge.acme.email=arif@sainsmograf.com"
+      # - "--certificatesresolvers.dokchallenge.acme.storage=/letsencrypt/dok-acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "./testdata/traefix-le-certs:/letsencrypt"
+      - /var/run/docker.sock:/var/run/docker.sock
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - "./testdata/volumes/mysql_data:/var/lib/mysql"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: testsite
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpassword
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.ng_pma.rule=Host(`pma.localhost`)"
+      - "traefik.http.routers.ng_pma.middlewares=pma-auth"
+      # - "traefik.http.middlewares.pma-auth.basicauth.users=dbadm:$$apr1$$KcqX0Xql$$FGKoGdMRY1vCdwKnqCdTh0"
+      - "traefik.http.routers.ng_pma.entrypoints=websecure"
+      - "traefik.http.routers.ng_pma.tls.certresolver=dokchallenge"
+      - "traefik.http.routers.ng_pma_insecure.rule=Host(`pma.localhost`)"
+      - "traefik.http.routers.ng_pma_insecure.entrypoints=web"
+      - "traefik.http.routers.ng_pma_insecure.middlewares=phpmyadmin-redirect"
+      - "traefik.http.middlewares.phpmyadmin-redirect.redirectscheme.scheme=https"
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_USERNAME: root
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - mysql
+  website:
+    image: arifwn/wordpress:7.4-apache
+    restart: always
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.website.rule=Host(`wp.localhost`)"
+      - "traefik.http.routers.website.entrypoints=websecure"
+      - "traefik.http.routers.website.tls.certresolver=dokchallenge"
+      - "traefik.http.routers.website_insecure.rule=Host(`wp.localhost`)"
+      - "traefik.http.routers.website_insecure.entrypoints=web"
+      - "traefik.http.routers.website_insecure.middlewares=dokweb-redirect"
+      - "traefik.http.middlewares.dokweb-redirect.redirectscheme.scheme=https"
+    volumes:
+      - ./testdata/html:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_NAME: testsite
+      WORDPRESS_DB_USER: testuser
+      WORDPRESS_DB_PASSWORD: testpassword
+    depends_on:
+      - mysql
+  sftp:
+    image: atmoz/sftp
+    ports:
+      - "9991:22"
+    volumes:
+      - ./testdata/html:/home/web/html/static
+    restart: always
+    command: web:web:33:33
+  memcache:
+    image: memcached
+    restart: always
+    mem_limit: 200000000
+    command: memcached -m 200
+
