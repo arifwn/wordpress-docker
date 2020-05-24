@@ -53,6 +53,8 @@ RUN set -ex; \
         unzip \
         unixodbc \
         gnupg \
+        less \
+        mariadb-client \
         apt-transport-https xfonts-base xfonts-75dpi libsasl2-dev wget fontconfig libxrender1 \
     ; \
     wget --quiet https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb -P /tmp/; \
