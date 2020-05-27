@@ -15,6 +15,8 @@ Run
 ---
 - cli from kubectl
     - `kubectl --kubeconfig=./kube_config_cluster.yml exec <pod name> -- /bin/bash`
+- cli from docker
+    - `docker exec -i container_name su - www-data -s /bin/sh -c "cd /var/www/html; /bin/bash"`
 - run wp as www-data:
     - `su www-data -s /bin/sh -c "wp shell"`
 
