@@ -8,6 +8,7 @@ Build
 
 - `docker build -t arifwn/wordpress:7.4-apache ./wordpress-php7.4`
 - `docker push arifwn/wordpress`
+- `docker build -t arifwn/php:5.6-apache ./php5.6`
 - `docker build -t arifwn/php:7.4-apache ./php7.4`
 - `docker push arifwn/php`
 
@@ -19,4 +20,8 @@ Run
     - `docker exec -i container_name su - www-data -s /bin/sh -c "cd /var/www/html; /bin/bash"`
 - run wp as www-data:
     - `su www-data -s /bin/sh -c "wp shell"`
-
+- run wp-cli image:
+    sudo docker run -it --rm \
+    --volumes-from container_id \
+    --network container:container_id \
+    arifwn/wordpress:cli /bin/bash
