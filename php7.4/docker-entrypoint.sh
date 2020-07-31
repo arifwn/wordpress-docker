@@ -40,6 +40,8 @@ if [[ "$1" == apache2* ]] || [ "$1" == php-fpm ]; then
 		group="$(id -g)"
 	fi
 
+
+	echo "<?php echo 'ready';" > /var/www/html/kubernetes-readiness-check.php
 	chown -R "$APACHE_RUN_USER:$APACHE_RUN_GROUP" /var/www/html
 
 	uniqueEnvs=(

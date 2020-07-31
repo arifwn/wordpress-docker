@@ -18,12 +18,12 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - "./testdata/traefix-le-certs:/letsencrypt"
+      - ./testdata/traefix-le-certs:/letsencrypt:cached
       - /var/run/docker.sock:/var/run/docker.sock
   mysql:
     image: mysql:5.7
     volumes:
-      - "./testdata/volumes/mysql_data:/var/lib/mysql"
+      - ./testdata/volumes/mysql_data:/var/lib/mysql:cached
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -64,12 +64,16 @@ services:
       - "traefik.http.routers.website_insecure.middlewares=dokweb-redirect"
       - "traefik.http.middlewares.dokweb-redirect.redirectscheme.scheme=https"
     volumes:
-      - ./testdata/html:/var/www/html
+      - ./testdata/html:/var/www/html:cached
     environment:
       WORDPRESS_DB_HOST: mysql:3306
       WORDPRESS_DB_NAME: testsite
       WORDPRESS_DB_USER: testuser
       WORDPRESS_DB_PASSWORD: testpassword
+      NEWRELIC_INSTALL: "YES"
+      NEWRELIC_PHP_AGENT_URL: "http://download.newrelic.com/php_agent/release/newrelic-php5-9.12.0.268-linux.tar.gz"
+      NEWRELIC_LICENSE_KEY: "55a194f861b7347a2e5d8d2097fe7ee3c0760518"
+      NEWRELIC_APP_NAME: "Test WP Site"
     depends_on:
       - mysql
   sftp:
@@ -77,7 +81,7 @@ services:
     ports:
       - "9991:22"
     volumes:
-      - ./testdata/html:/home/web/html/static
+      - ./testdata/html:/home/web/html/static:cached
     restart: always
     command: web:web:33:33
   memcache:

@@ -17,4 +17,7 @@ if [ "$NEWRELIC_INSTALL" = 'YES' ]; then
           /usr/local/etc/php/conf.d/newrelic.ini
 fi
 
+echo "<?php echo 'ready';" > /var/www/html/kubernetes-readiness-check.php
+chown "33:33" /var/www/html/kubernetes-readiness-check.php
+
 exec docker-entrypoint.sh "$@"
