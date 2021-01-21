@@ -1,4 +1,4 @@
-FROM wordpress:php7.4
+FROM php:8.0-apache
 
 # install the PHP extensions we need
 RUN set -ex; \
@@ -47,19 +47,12 @@ RUN set -ex; \
         | xargs -rt apt-mark manual; \
     \
     apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    apt-get update; \
     apt-get install -y \
         zip \
         unzip \
-        unixodbc \
         gnupg \
         less \
-        mariadb-client \
-        apt-transport-https xfonts-base xfonts-75dpi libsasl2-dev wget fontconfig libxrender1 \
     ; \
-    wget --quiet https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb -P /tmp/; \
-    dpkg -i /tmp/wkhtmltox_0.12.5-1.stretch_amd64.deb; \
-    rm /tmp/wkhtmltox_0.12.5-1.stretch_amd64.deb \
     rm -rf /var/lib/apt/lists/*
 
 # https://make.wordpress.org/cli/2018/05/31/gpg-signature-change/
@@ -86,10 +79,25 @@ RUN set -ex; \
     \
     wp --allow-root --version
 
-COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
-COPY init-with-newrelic.sh /usr/local/bin/
+# set recommended PHP.ini settings
+# see https://secure.php.net/manual/en/opcache.installation.php
+RUN { \
+        echo 'opcache.memory_consumption=128'; \
+        echo 'opcache.interned_strings_buffer=8'; \
+        echo 'opcache.max_accelerated_files=4000'; \
+        echo 'opcache.revalidate_freq=2'; \
+        echo 'opcache.fast_shutdown=1'; \
+        echo 'opcache.enable_cli=1'; \
+    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
-RUN a2enmod headers
+COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
+
+RUN a2enmod rewrite expires headers
+
+VOLUME /var/www/html
+
+COPY docker-entrypoint.sh /usr/local/bin/
+COPY init-with-newrelic.sh /usr/local/bin/
 
 ENTRYPOINT ["init-with-newrelic.sh"]
 CMD ["apache2-foreground"]

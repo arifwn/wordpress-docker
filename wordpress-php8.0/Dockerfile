@@ -1,4 +1,4 @@
-FROM wordpress:php7.4
+FROM wordpress:php8.0
 
 # install the PHP extensions we need
 RUN set -ex; \

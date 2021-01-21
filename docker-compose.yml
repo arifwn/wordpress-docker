@@ -15,8 +15,8 @@ services:
       # - "--certificatesresolvers.dokchallenge.acme.email=arif@sainsmograf.com"
       # - "--certificatesresolvers.dokchallenge.acme.storage=/letsencrypt/dok-acme.json"
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "8443:443"
     volumes:
       - ./testdata/traefix-le-certs:/letsencrypt:cached
       - /var/run/docker.sock:/var/run/docker.sock
@@ -71,7 +71,7 @@ services:
       WORDPRESS_DB_USER: testuser
       WORDPRESS_DB_PASSWORD: testpassword
       NEWRELIC_INSTALL: "YES"
-      NEWRELIC_PHP_AGENT_URL: "http://download.newrelic.com/php_agent/release/newrelic-php5-9.12.0.268-linux.tar.gz"
+      NEWRELIC_PHP_AGENT_URL: "https://download.newrelic.com/php_agent/release/newrelic-php5-9.15.0.293-linux.tar.gz"
       NEWRELIC_LICENSE_KEY: "55a194f861b7347a2e5d8d2097fe7ee3c0760518"
       NEWRELIC_APP_NAME: "Test WP Site"
     depends_on:
