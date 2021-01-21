@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-if [ "$NEWRELIC_INSTALL" = 'YES' ]; then
+if [[ "$NEWRELIC_INSTALL" = 'YES' && ! -f /usr/local/etc/php/conf.d/newrelic.ini]]; then
     echo "enabling newrelic"
     curl -L $NEWRELIC_PHP_AGENT_URL | tar -C /tmp -zx
     
