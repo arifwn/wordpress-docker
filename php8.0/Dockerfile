@@ -88,6 +88,8 @@ RUN { \
         echo 'opcache.revalidate_freq=2'; \
         echo 'opcache.fast_shutdown=1'; \
         echo 'opcache.enable_cli=1'; \
+        echo 'opcache.enable=1'; \
+        echo 'opcache.jit_buffer_size=100M'; \
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
