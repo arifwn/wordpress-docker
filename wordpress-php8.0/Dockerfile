@@ -22,6 +22,7 @@ RUN set -ex; \
         libxpm-dev \
         libfreetype6-dev \
         libmagickwand-dev \
+        ghostscript \
     ; \
     \
 #    pecl install imagick; \
@@ -58,6 +59,7 @@ RUN set -ex; \
         gnupg \
         less \
         mariadb-client \
+        ghostscript\
         apt-transport-https xfonts-base xfonts-75dpi libsasl2-dev wget fontconfig libxrender1 libxext6 \
     ; \
     wget --quiet https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb -P /tmp/; \
