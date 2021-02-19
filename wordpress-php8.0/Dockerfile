@@ -21,8 +21,12 @@ RUN set -ex; \
         libpng-dev \
         libxpm-dev \
         libfreetype6-dev \
+        libmagickwand-dev \
     ; \
     \
+#    pecl install imagick; \
+    mkdir -p /usr/src/php/ext/imagick; \
+    curl -fsSL https://github.com/Imagick/imagick/archive/06116aa24b76edaf6b1693198f79e6c295eda8a9.tar.gz | tar xvz -C "/usr/src/php/ext/imagick" --strip 1; \
     pecl install memcached; \
     pecl install redis; \
     pecl install mcrypt-1.0.4; \
@@ -33,8 +37,7 @@ RUN set -ex; \
     docker-php-ext-configure pdo_dblib --with-libdir=/lib/x86_64-linux-gnu; \
     docker-php-ext-configure gd --with-webp --with-jpeg \
     --with-xpm --with-freetype; \
-    docker-php-ext-install gd xsl pdo_odbc soap pdo_dblib zip; \
-    \
+    docker-php-ext-install gd imagick xsl pdo_odbc soap pdo_dblib zip; \
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
     apt-mark auto '.*' > /dev/null; \
     apt-mark manual $savedAptMark; \
