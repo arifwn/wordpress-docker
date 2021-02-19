@@ -55,11 +55,11 @@ RUN set -ex; \
         gnupg \
         less \
         mariadb-client \
-        apt-transport-https xfonts-base xfonts-75dpi libsasl2-dev wget fontconfig libxrender1 \
+        apt-transport-https xfonts-base xfonts-75dpi libsasl2-dev wget fontconfig libxrender1 libxext6 \
     ; \
-    wget --quiet https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb -P /tmp/; \
-    dpkg -i /tmp/wkhtmltox_0.12.5-1.stretch_amd64.deb; \
-    rm /tmp/wkhtmltox_0.12.5-1.stretch_amd64.deb \
+    wget --quiet https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb -P /tmp/; \
+    dpkg -i /tmp/wkhtmltox_0.12.5-1.buster_amd64.deb; \
+    rm /tmp/wkhtmltox_0.12.5-1.buster_amd64.deb \
     rm -rf /var/lib/apt/lists/*
 
 # https://make.wordpress.org/cli/2018/05/31/gpg-signature-change/
@@ -86,10 +86,23 @@ RUN set -ex; \
     \
     wp --allow-root --version
 
+# set recommended PHP.ini settings
+# see https://secure.php.net/manual/en/opcache.installation.php
+RUN { \
+        echo 'opcache.memory_consumption=128'; \
+        echo 'opcache.interned_strings_buffer=8'; \
+        echo 'opcache.max_accelerated_files=4000'; \
+        echo 'opcache.revalidate_freq=2'; \
+        echo 'opcache.fast_shutdown=1'; \
+        echo 'opcache.enable_cli=1'; \
+        echo 'opcache.enable=1'; \
+        echo 'opcache.jit_buffer_size=100M'; \
+    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
+
 COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 COPY init-with-newrelic.sh /usr/local/bin/
 
-RUN a2enmod headers
+RUN a2enmod rewrite expires headers
 
 ENTRYPOINT ["init-with-newrelic.sh"]
 CMD ["apache2-foreground"]
