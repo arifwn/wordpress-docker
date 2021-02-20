@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+if [ ! -z "$POST_INSTALL_SCRIPT" ]; then
+    echo "executing post installation script: $POST_INSTALL_SCRIPT"
+    "/var/www/html/$POST_INSTALL_SCRIPT"
+fi
+
 if [ "$NEWRELIC_INSTALL" = 'YES' ]; then
     if [ ! -f /usr/local/etc/php/conf.d/newrelic.ini ]; then
         echo "enabling newrelic"
