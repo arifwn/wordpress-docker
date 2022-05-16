@@ -1,4 +1,4 @@
-FROM wordpress:php8.0
+FROM wordpress:php8.1
 
 # install the PHP extensions we need
 RUN set -ex; \
@@ -15,7 +15,7 @@ RUN set -ex; \
         unixodbc-dev \
         freetds-dev \
         zlib1g-dev \
-        libmcrypt-dev \
+        # libmcrypt-dev \
         libwebp-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
@@ -30,9 +30,9 @@ RUN set -ex; \
     curl -fsSL https://github.com/Imagick/imagick/archive/06116aa24b76edaf6b1693198f79e6c295eda8a9.tar.gz | tar xvz -C "/usr/src/php/ext/imagick" --strip 1; \
     pecl install memcached; \
     pecl install redis; \
-    pecl install mcrypt-1.0.4; \
+    # pecl install mcrypt-1.0.5; \
     docker-php-ext-enable memcached; \
-    docker-php-ext-enable mcrypt; \
+    # docker-php-ext-enable mcrypt; \
     docker-php-ext-enable redis; \
     docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr; \
     docker-php-ext-configure pdo_dblib --with-libdir=/lib/x86_64-linux-gnu; \

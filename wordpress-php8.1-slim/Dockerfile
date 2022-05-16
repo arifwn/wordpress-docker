@@ -1,4 +1,4 @@
-FROM php:8.0-apache
+FROM wordpress:php8.1
 
 # install the PHP extensions we need
 RUN set -ex; \
@@ -15,7 +15,7 @@ RUN set -ex; \
         unixodbc-dev \
         freetds-dev \
         zlib1g-dev \
-        libmcrypt-dev \
+        # libmcrypt-dev \
         libwebp-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
@@ -25,15 +25,15 @@ RUN set -ex; \
     \
     pecl install memcached; \
     pecl install redis; \
-    pecl install mcrypt-1.0.4; \
+    # pecl install mcrypt-1.0.5; \
     docker-php-ext-enable memcached; \
-    docker-php-ext-enable mcrypt; \
+    # docker-php-ext-enable mcrypt; \
     docker-php-ext-enable redis; \
     docker-php-ext-configure pdo_odbc --with-pdo-odbc=unixODBC,/usr; \
     docker-php-ext-configure pdo_dblib --with-libdir=/lib/x86_64-linux-gnu; \
     docker-php-ext-configure gd --with-webp --with-jpeg \
     --with-xpm --with-freetype; \
-    docker-php-ext-install mysqli gd xsl pdo_odbc soap pdo_dblib zip opcache; \
+    docker-php-ext-install gd xsl pdo_mysql pdo_odbc soap pdo_dblib zip; \
     \
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
     apt-mark auto '.*' > /dev/null; \
@@ -46,15 +46,8 @@ RUN set -ex; \
         | sort -u \
         | xargs -rt apt-mark manual; \
     \
-    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
-    apt-get install -y \
-        zip \
-        unzip \
-        gnupg \
-        less \
-    ; \
-    rm -rf /var/lib/apt/lists/*
-
+    apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false;
+    
 # set recommended PHP.ini settings
 # see https://secure.php.net/manual/en/opcache.installation.php
 RUN { \
@@ -68,13 +61,9 @@ RUN { \
     } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
+COPY init-with-newrelic.sh /usr/local/bin/
 
 RUN a2enmod rewrite expires headers
-
-VOLUME /var/www/html
-
-COPY docker-entrypoint.sh /usr/local/bin/
-COPY init-with-newrelic.sh /usr/local/bin/
 
 ENTRYPOINT ["init-with-newrelic.sh"]
 CMD ["apache2-foreground"]

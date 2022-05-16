@@ -1,4 +1,4 @@
-FROM php:7.3-alpine
+FROM php:7.4-alpine
 
 # install the PHP extensions we need (https://make.wordpress.org/hosting/handbook/handbook/server-environment/#php-extensions)
 RUN set -ex; \
@@ -8,13 +8,17 @@ RUN set -ex; \
         freetype-dev \
         imagemagick-dev \
         libjpeg-turbo-dev \
+        libwebp-dev \
         libpng-dev \
+        libxpm-dev \
+        freetype-dev \
         libzip-dev \
         libmemcached-dev \
         libmcrypt-dev \
     ; \
     \
-    docker-php-ext-configure gd --with-freetype-dir=/usr --with-jpeg-dir=/usr --with-png-dir=/usr; \
+    docker-php-ext-configure gd --with-webp --with-jpeg \
+    --with-xpm --with-freetype; \
     docker-php-ext-install -j "$(nproc)" \
         bcmath \
         exif \
@@ -24,7 +28,7 @@ RUN set -ex; \
     ; \
     pecl install memcached; \
     docker-php-ext-enable memcached; \
-    pecl install mcrypt-1.0.3; \
+    pecl install mcrypt-1.0.4; \
     docker-php-ext-enable mcrypt; \
     pecl install imagick-3.4.4; \
     docker-php-ext-enable imagick; \
@@ -75,8 +79,8 @@ VOLUME /var/www/html
 # sub   rsa2048 2018-05-31 [E]
 ENV WORDPRESS_CLI_GPG_KEY 63AF7AA15067C05616FDDD88A3A2E8F226F0BC06
 
-ENV WORDPRESS_CLI_VERSION 2.4.0
-ENV WORDPRESS_CLI_SHA512 4049c7e45e14276a70a41c3b0864be7a6a8cfa8ea65ebac8b184a4f503a91baa1a0d29260d03248bc74aef70729824330fb6b396336172a624332e16f64e37ef
+ENV WORDPRESS_CLI_VERSION 2.6.0
+ENV WORDPRESS_CLI_SHA512 d73f9161a1f03b8ecaac7b196b6051fe847b3c402b9c92b1f6f3acbe5b1cf91f7260c0e499b8947bab75920ecec918b39533ca65fa5a1fd3eb6ce7b8e2c58e7d
 
 RUN set -ex; \
     \
@@ -87,7 +91,7 @@ RUN set -ex; \
     curl -o /usr/local/bin/wp.gpg -fSL "https://github.com/wp-cli/wp-cli/releases/download/v${WORDPRESS_CLI_VERSION}/wp-cli-${WORDPRESS_CLI_VERSION}.phar.gpg"; \
     \
     export GNUPGHOME="$(mktemp -d)"; \
-    gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys "$WORDPRESS_CLI_GPG_KEY"; \
+    gpg --batch --keyserver keyserver.ubuntu.com --recv-keys "$WORDPRESS_CLI_GPG_KEY"; \
     gpg --batch --decrypt --output /usr/local/bin/wp /usr/local/bin/wp.gpg; \
     command -v gpgconf && gpgconf --kill all || :; \
     rm -rf "$GNUPGHOME" /usr/local/bin/wp.gpg; \

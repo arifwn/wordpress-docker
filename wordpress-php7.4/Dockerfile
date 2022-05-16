@@ -57,9 +57,9 @@ RUN set -ex; \
         mariadb-client \
         apt-transport-https xfonts-base xfonts-75dpi libsasl2-dev wget fontconfig libxrender1 \
     ; \
-    wget --quiet https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.stretch_amd64.deb -P /tmp/; \
-    dpkg -i /tmp/wkhtmltox_0.12.5-1.stretch_amd64.deb; \
-    rm /tmp/wkhtmltox_0.12.5-1.stretch_amd64.deb \
+    wget --quiet https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb -P /tmp/; \
+    dpkg -i /tmp/wkhtmltox_0.12.6-1.buster_amd64.deb; \
+    rm /tmp/wkhtmltox_0.12.6-1.buster_amd64.deb \
     rm -rf /var/lib/apt/lists/*
 
 # https://make.wordpress.org/cli/2018/05/31/gpg-signature-change/
@@ -69,8 +69,8 @@ RUN set -ex; \
 # sub   rsa2048 2018-05-31 [E]
 ENV WORDPRESS_CLI_GPG_KEY 63AF7AA15067C05616FDDD88A3A2E8F226F0BC06
 
-ENV WORDPRESS_CLI_VERSION 2.5.0
-ENV WORDPRESS_CLI_SHA512 08dd9035fda1d529807380d5b757839e2809e289eb1a698fe33e7e21a1431d3f77c551c2b2db5adc55083d5075ea4137407994111890f765e790a97e6d9ca7af
+ENV WORDPRESS_CLI_VERSION 2.6.0
+ENV WORDPRESS_CLI_SHA512 d73f9161a1f03b8ecaac7b196b6051fe847b3c402b9c92b1f6f3acbe5b1cf91f7260c0e499b8947bab75920ecec918b39533ca65fa5a1fd3eb6ce7b8e2c58e7d
 
 RUN set -ex; \
     curl -o /usr/local/bin/wp.gpg -fL "https://github.com/wp-cli/wp-cli/releases/download/v${WORDPRESS_CLI_VERSION}/wp-cli-${WORDPRESS_CLI_VERSION}.phar.gpg"; \
