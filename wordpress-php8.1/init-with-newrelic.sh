@@ -9,7 +9,7 @@ fi
 if [ "$NEWRELIC_INSTALL" = 'YES' ]; then
     if [ ! -f /usr/local/etc/php/conf.d/newrelic.ini ]; then
         echo "enabling newrelic"
-        curl -L $NEWRELIC_PHP_AGENT_URL | tar -C /tmp -zx
+        curl --output - $NEWRELIC_PHP_AGENT_URL | tar -C /tmp -zx
         
         export NR_INSTALL_USE_CP_NOT_LN=1
         export NR_INSTALL_SILENT=1
