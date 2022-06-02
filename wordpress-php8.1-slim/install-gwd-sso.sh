@@ -4,8 +4,8 @@ set -e
 if [ -z "${OPENID_CONNECT_CLIENT_ID}" ]; then
     echo 'No OpenID Connect client id defined. OpenID Connect client will not be installed.'
 else
-    echo 'installing OpenID Connect client in 1 minutes...'
-    sleep 1m
+    echo 'installing OpenID Connect client in 3 minutes...'
+    sleep 3m
 
     if [ ! -d "/var/www/html/wp-content/mu-plugins" ]; then
         mkdir /var/www/html/wp-content/mu-plugins
