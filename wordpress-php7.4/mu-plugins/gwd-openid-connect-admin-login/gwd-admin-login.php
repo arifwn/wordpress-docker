@@ -14,12 +14,12 @@
  *
  * @wordpress-plugin
  * Plugin Name:       GWD OpenID Connect Administators Login
- * Plugin URI:        https://github.com/daggerhart/gwd-admin-login
+ * Plugin URI:        https://groverwebdesign.com
  * Description:       Grover Web Design administrative login via OpenID Connect.
  * Version:           1.0.0
  * Requires at least: 4.9
  * Requires PHP:      7.4
- * Author:            arifwn
+ * Author:            Grover Web Design
  * Author URI:        
  * Text Domain:       gwd-openid-connect-admin-login
  * Domain Path:       /languages
