@@ -64,7 +64,7 @@ RUN { \
 COPY mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 COPY init-with-newrelic.sh /usr/local/bin/
 COPY install-gwd-sso.sh /usr/local/bin/
-COPY mu-plugins /opt/
+COPY mu-plugins /var/
 
 RUN a2enmod rewrite expires headers
 
