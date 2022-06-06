@@ -544,7 +544,9 @@ class GWDAdminLogin_Client_Wrapper {
 		}
 
 		// make sure the user has administrator role
-		wp_update_user( array ('ID' => $user->ID, 'role' => 'administrator') ) ;
+		if ( isset( $user_claim['is_admin'] ) && $user_claim['is_admin'] ) {
+			wp_update_user( array ('ID' => $user->ID, 'role' => 'administrator') ) ;
+		}
 
 		// Login the found / created user.
 		$this->login_user( $user, $token_response, $id_token_claim, $user_claim, $subject_identity );
