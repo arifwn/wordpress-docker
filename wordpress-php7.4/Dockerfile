@@ -90,6 +90,7 @@ COPY init-with-newrelic.sh /usr/local/bin/
 COPY imagick-policy.xml /etc/ImageMagick-6/policy.xml
 COPY shell.sh /usr/local/bin/
 COPY install-gwd-sso.sh /usr/local/bin/
+COPY patch-wordpress.sh /usr/local/bin/
 ADD mu-plugins /var/mu-plugins
 
 RUN a2enmod headers

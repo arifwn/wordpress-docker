@@ -23,5 +23,6 @@ echo "<?php echo 'ready';" > /var/www/html/kubernetes-readiness-check.php
 chown "33:33" /var/www/html/kubernetes-readiness-check.php
 
 /usr/local/bin/install-gwd-sso.sh &
+/usr/local/bin/patch-wordpress.sh &
 
 exec docker-entrypoint.sh "$@"
